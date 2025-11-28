@@ -1,12 +1,22 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Manrope, Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
 import { siteConfig } from '@/lib/site-config'
+import MouseSpotlight from '@/components/ui/mouse-spotlight'
+import { Toaster } from 'sonner'
 
-const inter = Inter({ subsets: ['latin'] })
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -14,13 +24,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: [
-    'Blog',
-    'Personal Brand',
-    'Technology',
-    'Development',
-    'Programming',
-  ],
+  keywords: ['Next.js', 'React', 'Tailwind CSS', 'Web Development', 'Portfolio'],
   authors: [
     {
       name: siteConfig.author,
@@ -35,32 +39,12 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: `${siteConfig.url}/og-image.png`,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [`${siteConfig.url}/og-image.png`],
-    creator: '@yourtwitterhandle',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+    creator: '@aerodev',
   },
   icons: {
     icon: '/favicon.ico',
@@ -77,18 +61,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${manrope.variable} ${inter.variable} font-sans antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen bg-background flex flex-col">
+          <MouseSpotlight />
+          <div className="min-h-screen flex flex-col relative z-10">
             <Navigation />
-            <main className="flex-1">{children}</main>
+            <main id="main-content" className="flex-1" role="main">
+              {children}
+            </main>
             <Footer />
           </div>
+          <Toaster 
+            position="bottom-right" 
+            expand={false}
+            richColors
+            closeButton
+          />
         </ThemeProvider>
       </body>
     </html>

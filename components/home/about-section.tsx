@@ -3,69 +3,83 @@
 import Link from 'next/link'
 
 export default function AboutSection() {
-  const stats = [
-    { label: 'Projects Completed', value: '50+' },
-    { label: 'Happy Clients', value: '30+' },
-    { label: 'Years Experience', value: '3+' },
-    { label: 'Technologies', value: '15+' },
-  ]
-
   return (
-    <section id="about" className="section bg-gray-50 dark:bg-[#0A0A0A] border-y border-gray-200 dark:border-white/5 scroll-mt-20">
+    <section id="about" className="section bg-gray-50 dark:bg-gray-900 scroll-mt-20">
       <div className="container-wide">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-16">
-          <div className="space-y-8">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
-              WE BUILD <br />
-              <span className="gradient-text">WHAT MATTERS</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-6">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+              A SPACE FOR<br />
+              <span className="text-gray-600 dark:text-gray-400">CREATIVE EXPLORATION</span>
             </h2>
             
-            <div className="space-y-6 text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            <div className="space-y-4 text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
               <p>
-                Founded by Gading Satrio, AeroDev is more than just a development agency. We are your strategic partner in the digital age.
+                Aerodev is my creative space where I document my journey of building, learning, and experimenting with technology.
               </p>
               <p>
-                We believe that great software is born at the intersection of engineering and design. Our approach is simple: we listen, we strategize, and we execute with pixel-perfect precision.
+                I'm a developer passionate about web development, design, and sharing what I learn along the way. This isn't about perfection—it's about progress, curiosity, and honest exploration.
               </p>
               <p>
-                From startups to established businesses, we've helped companies transform their digital presence and achieve their goals through innovative web solutions.
+                Here you'll find articles, project showcases, experiments, and reflections from my journey. I believe in learning in public and growing together with the community.
               </p>
             </div>
 
-            <Link href="/about" className="accent-link text-base group">
-              Read Our Story
-              <svg className="w-5 h-5 ml-2 inline-block group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-3 gap-4 py-6">
+              <div className="text-center p-4 rounded-xl bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-gray-800 backdrop-blur-sm">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1">50+</div>
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">Projects</div>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-gray-800 backdrop-blur-sm">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1">5+</div>
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">Years</div>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-gray-800 backdrop-blur-sm">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1">100%</div>
+                <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">Satisfaction</div>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Link href="/about" className="inline-flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors group">
+                <span className="border-b-2 border-gray-900 dark:border-white pb-0.5 group-hover:border-gray-600 dark:group-hover:border-gray-300 transition-colors">
+                  More About Me
+                </span>
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
           </div>
 
-          <div className="relative aspect-square lg:aspect-[4/3] bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-500/5 dark:to-cyan-500/5 rounded-3xl overflow-hidden border border-gray-200 dark:border-white/5">
-            {/* Abstract Visual / Image Placeholder */}
+          <div className="relative aspect-square lg:aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            {/* Logo and Brand */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-6xl font-black text-black/5 dark:text-white/5">AERODEV</div>
-                <div className="text-sm font-mono text-gray-400 dark:text-gray-600 mt-4">EST. 2024</div>
+              <div className="text-center space-y-6">
+                {/* Logo Icon */}
+                <div className="flex justify-center">
+                  <div className="w-20 h-20 md:w-24 md:h-24 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center shadow-xl border border-gray-200 dark:border-gray-700">
+                    <svg className="w-10 h-10 md:w-12 md:h-12 text-gray-900 dark:text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 4L4 20H8L12 12L16 20H20L12 4Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                {/* Brand Text */}
+                <div className="space-y-1">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    Aerodev
+                  </div>
+                  <div className="text-xs md:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                    by Gading Satrio
+                  </div>
+                </div>
+                
+                <div className="text-xs font-mono text-gray-400 dark:text-gray-600 mt-4">Building & Learning</div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <div 
-              key={stat.label}
-              className="glass-card p-6 text-center hover:scale-105 transition-transform duration-300"
-            >
-              <div className="text-3xl md:text-4xl font-black gradient-text mb-2">
-                {stat.value}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                {stat.label}
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </section>

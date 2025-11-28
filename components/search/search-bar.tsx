@@ -72,19 +72,19 @@ export function SearchBar() {
   }
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-md">
-      <div className="relative">
+    <div ref={searchRef} className="relative w-full">
+      <div className="relative group">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Search posts..."
-          className="w-full px-4 py-2 pl-10 pr-4 text-sm border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary-500"
+          placeholder="Search articles..."
+          className="w-full px-5 py-4 pl-12 pr-12 text-base bg-white dark:bg-black border-2 border-gray-100 dark:border-gray-800 rounded-2xl focus:outline-none focus:border-gray-900 dark:focus:border-white transition-all shadow-sm group-hover:shadow-md text-gray-900 dark:text-white placeholder-gray-400"
           aria-label="Search"
         />
         <svg
-          className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-gray-900 dark:group-focus-within:text-white transition-colors"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -99,9 +99,9 @@ export function SearchBar() {
         {query && (
           <button
             onClick={() => setQuery('')}
-            className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -109,7 +109,7 @@ export function SearchBar() {
       </div>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 w-full bg-background border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full mt-4 w-full bg-white dark:bg-black border border-gray-100 dark:border-gray-800 rounded-2xl shadow-xl z-50 max-h-96 overflow-y-auto">
           {isLoading ? (
             <div className="p-4 text-center text-muted-foreground">
               <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-primary-500"></div>

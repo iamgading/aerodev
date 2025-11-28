@@ -6,22 +6,29 @@ interface LogoProps {
   showIcon?: boolean
 }
 
-export default function Logo({ showIcon = false }: LogoProps) {
+export default function Logo({ showIcon = true }: LogoProps) {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.location.pathname === '/') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
-    <Link href="/" className="group flex items-center gap-3">
-      {showIcon && (
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-          <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 8V16M8 12H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </div>
-      )}
-      <div className="flex flex-col items-start leading-none">
-        <span className="text-2xl font-black tracking-tight text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-cyan-400 transition-all duration-300">
-          AeroDev
+    <Link href="/" onClick={handleClick} className="group flex items-center gap-2.5">
+      {/* Icon */}
+      <div className="relative w-8 h-8 flex items-center justify-center bg-gray-900 dark:bg-white rounded-lg group-hover:scale-105 transition-transform duration-300">
+        <svg className="w-5 h-5 text-white dark:text-gray-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4L4 20H8L12 12L16 20H20L12 4Z" fill="currentColor"/>
+        </svg>
+      </div>
+      
+      {/* Text */}
+      <div className="flex flex-col leading-none">
+        <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white font-manrope">
+          Aerodev
         </span>
-        <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400 tracking-widest uppercase group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors duration-300">
+        <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 tracking-wide uppercase">
           by Gading Satrio
         </span>
       </div>

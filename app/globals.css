@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,23 +6,28 @@
 
 @layer base {
   :root {
-    /* Color Palette - Professional & Modern */
-    --color-primary: 59 130 246; /* blue-600 */
-    --color-primary-dark: 37 99 235; /* blue-700 */
-    --color-accent: 34 211 238; /* cyan-400 */
-    --color-accent-dark: 6 182 212; /* cyan-500 */
+    /* Color Palette - Pure Grayscale */
+    --color-primary: 64 64 64; /* gray-700 */
+    --color-primary-dark: 38 38 38; /* gray-800 */
+    --color-accent: 115 115 115; /* gray-600 */
+    --color-accent-dark: 64 64 64; /* gray-700 */
+    
+    /* Accent Color - Blue for CTAs */
+    --color-blue: 59 130 246; /* blue-500 */
+    --color-blue-hover: 37 99 235; /* blue-600 */
+    --color-blue-light: 96 165 250; /* blue-400 */
     
     /* Neutral Colors */
     --color-bg-light: 255 255 255;
-    --color-bg-dark: 5 5 5;
-    --color-surface-light: 249 250 251; /* gray-50 */
-    --color-surface-dark: 10 10 10;
+    --color-bg-dark: 0 0 0; /* pure black */
+    --color-surface-light: 250 250 250; /* gray-50 */
+    --color-surface-dark: 23 23 23; /* gray-900 */
     
     /* Text Colors */
-    --color-text-primary-light: 17 24 39; /* gray-900 */
-    --color-text-primary-dark: 243 244 246; /* gray-100 */
-    --color-text-secondary-light: 107 114 128; /* gray-500 */
-    --color-text-secondary-dark: 156 163 175; /* gray-400 */
+    --color-text-primary-light: 23 23 23; /* gray-900 */
+    --color-text-primary-dark: 250 250 250; /* gray-50 */
+    --color-text-secondary-light: 115 115 115; /* gray-600 */
+    --color-text-secondary-dark: 163 163 163; /* gray-400 */
   }
 
   html {
@@ -34,13 +39,20 @@
   }
   
   body {
-    @apply bg-white text-gray-900 dark:bg-[#050505] dark:text-gray-100 antialiased;
-    font-family: 'Outfit', system-ui, sans-serif;
+    @apply bg-white text-gray-900 dark:bg-black dark:text-gray-50 antialiased;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    letter-spacing: -0.011em;
+    /* iOS Safe Area Support */
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-manrope), sans-serif;
     @apply font-bold tracking-tight;
+    line-height: 1.2;
   }
 }
 
@@ -63,7 +75,7 @@
   
   /* Section Spacing - Increased for better scroll positioning */
   .section {
-    @apply py-24 md:py-32 lg:py-40;
+    @apply py-16 md:py-32 lg:py-40;
   }
 
   /* Glass Cards */
@@ -166,4 +178,137 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Per-Letter Wave Animation */
+@keyframes letter-wave {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.05);
+  }
+}
+
+.animate-letter-wave span {
+  display: inline-block;
+  animation: letter-wave 3s ease-in-out infinite;
+}
+
+/* Stagger delay for each letter */
+.animate-letter-wave span:nth-child(1) { animation-delay: 0s; }
+.animate-letter-wave span:nth-child(2) { animation-delay: 0.1s; }
+.animate-letter-wave span:nth-child(3) { animation-delay: 0.2s; }
+.animate-letter-wave span:nth-child(4) { animation-delay: 0.3s; }
+.animate-letter-wave span:nth-child(5) { animation-delay: 0.4s; }
+.animate-letter-wave span:nth-child(6) { animation-delay: 0.5s; }
+.animate-letter-wave span:nth-child(7) { animation-delay: 0.6s; }
+.animate-letter-wave span:nth-child(8) { animation-delay: 0.7s; }
+.animate-letter-wave span:nth-child(9) { animation-delay: 0.8s; }
+.animate-letter-wave span:nth-child(10) { animation-delay: 0.9s; }
+.animate-letter-wave span:nth-child(11) { animation-delay: 1s; }
+.animate-letter-wave span:nth-child(12) { animation-delay: 1.1s; }
+.animate-letter-wave span:nth-child(13) { animation-delay: 1.2s; }
+.animate-letter-wave span:nth-child(14) { animation-delay: 1.3s; }
+.animate-letter-wave span:nth-child(15) { animation-delay: 1.4s; }
+.animate-letter-wave span:nth-child(16) { animation-delay: 1.5s; }
+.animate-letter-wave span:nth-child(17) { animation-delay: 1.6s; }
+.animate-letter-wave span:nth-child(18) { animation-delay: 1.7s; }
+.animate-letter-wave span:nth-child(19) { animation-delay: 1.8s; }
+.animate-letter-wave span:nth-child(20) { animation-delay: 1.9s; }
+
+/* ============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+/* Focus Visible Styles - Keyboard Navigation */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid rgb(var(--color-primary));
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.dark *:focus-visible {
+  outline-color: rgb(var(--color-accent));
+}
+
+/* Enhanced focus for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Focus for dark backgrounds */
+.dark button:focus-visible,
+.dark a:focus-visible {
+  outline-color: white;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: rgb(var(--color-primary));
+  color: white;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 0 0 0.5rem 0;
+  z-index: 100;
+  transition: top 0.2s;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable specific animations */
+  .animate-ping,
+  .animate-pulse,
+  .animate-spin,
+  .animate-bounce {
+    animation: none !important;
+  }
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus,
+.sr-only:active {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
 }

@@ -40,21 +40,21 @@ const projects = [
 
 export default function ProjectsSection() {
   return (
-    <section id="projects" className="section bg-gray-50 dark:bg-[#0A0A0A] border-y border-gray-200 dark:border-white/5 scroll-mt-20">
+    <section id="projects" className="section !pt-12 md:!pt-20 bg-white dark:bg-black scroll-mt-20">
       <div className="container-wide">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
           <div className="max-w-2xl">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">
-              FEATURED <br />
-              <span className="gradient-text">WORK</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              THINGS I'VE <br />
+              <span className="text-gray-600 dark:text-gray-400">BUILT</span>
             </h2>
             <p className="text-base md:text-lg text-gray-600 dark:text-gray-400">
-              Selected projects that showcase our capabilities.
+              Projects and experiments from my creative journey.
             </p>
           </div>
           <Link 
             href="/projects" 
-            className="btn-premium-outline px-8 py-3 text-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 text-sm font-bold border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl hover:border-gray-900 dark:hover:border-gray-100 transition-all duration-300"
           >
             View All Projects
           </Link>
@@ -97,9 +97,9 @@ export default function ProjectsSection() {
                   
                   <Link 
                     href={`/projects/${project.slug}`}
-                    className="inline-flex items-center text-white font-semibold accent-link"
+                    className="inline-flex items-center text-white font-semibold hover:text-gray-200 transition-colors"
                   >
-                    View Case Study
+                    View Project
                     <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>

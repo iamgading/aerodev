@@ -2,240 +2,368 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { siteConfig } from '@/lib/site-config'
+import { Mail, MessageCircle, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { Spinner } from '@/components/ui/spinner'
+import { validateEmail } from '@/lib/utils'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    projectType: 'Web Application',
-    message: '',
+    projectType: '',
+    message: ''
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+
+  const MAX_MESSAGE_LENGTH = 500
+
+  // Real-time validation
+  const validateField = (name: string, value: string): string => {
+    switch (name) {
+      case 'name':
+        if (!value.trim()) return 'Name is required'
+        if (value.trim().length < 2) return 'Name must be at least 2 characters'
+        return ''
+      case 'email':
+        if (!value.trim()) return 'Email is required'
+        if (!validateEmail(value)) return 'Please enter a valid email'
+        return ''
+      case 'projectType':
+        if (!value) return 'Please select a project type'
+        return ''
+      case 'message':
+        if (!value.trim()) return 'Message is required'
+        if (value.trim().length < 10) return 'Message must be at least 10 characters'
+        if (value.length > MAX_MESSAGE_LENGTH) return `Message must be less than ${MAX_MESSAGE_LENGTH} characters`
+        return ''
+      default:
+        return ''
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate all fields
+    const newErrors: Record<string, string> = {}
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key as keyof typeof formData])
+      if (error) newErrors[key] = error
+    })
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      toast.error('Please fix the errors in the form')
+      return
+    }
+
     setIsSubmitting(true)
+
+    try {
+      // Format message for WhatsApp
+      const whatsappMessage = `Hi! I'm interested in working with you.
+
+*Name:* ${formData.name}
+*Email:* ${formData.email}
+*Project Type:* ${formData.projectType}
+
+*Message:*
+${formData.message}`
+
+      // Simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      // Encode and open WhatsApp
+      const whatsappNumber = '62896540617718'
+      const encodedMessage = encodeURIComponent(whatsappMessage)
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank')
+
+      toast.success('Redirecting to WhatsApp...', {
+        description: 'Your message has been prepared successfully!'
+      })
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        projectType: '',
+        message: ''
+      })
+      setTouched({})
+      setErrors({})
+    } catch (error) {
+      toast.error('Something went wrong', {
+        description: 'Please try again or contact us directly.'
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    setFormData({ name: '', email: '', projectType: 'Web Application', message: '' })
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[name]
+        return newErrors
+      })
+    }
+  }
+
+  const handleBlur = (name: string) => {
+    setTouched(prev => ({ ...prev, [name]: true }))
+    const error = validateField(name, formData[name as keyof typeof formData])
+    if (error) {
+      setErrors(prev => ({ ...prev, [name]: error }))
+    }
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <section className="py-20 bg-gray-50 dark:bg-slate-900/50">
-        <div className="container-custom text-center animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-black mb-6">
-            Let's Work <span className="gradient-text">Together</span>
+      <section className="py-24 md:py-32 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+        <div className="container-wide text-center">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6">
+            LET'S <span className="text-gray-500">WORK TOGETHER</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Have a project in mind? We'd love to hear about it. Send us a message and let's create something amazing.
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Have a project in mind? Fill out the form below and I'll get back to you within 24 hours.
           </p>
         </div>
       </section>
 
-      <section className="section">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-            {/* Contact Info */}
-            <div className="space-y-8 animate-slide-up">
-              <div>
-                <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-8">
-                  Whether you have a question about our services, pricing, or just want to say hi, our team is ready to answer all your questions.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <ContactItem 
-                  icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />}
-                  title="Email Us"
-                  content={siteConfig.contact.email}
-                  link={`mailto:${siteConfig.contact.email}`}
-                />
-                
-                <ContactItem 
-                  icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />}
-                  title="WhatsApp"
-                  content={siteConfig.contact.whatsapp}
-                  link={`https://wa.me/${siteConfig.contact.whatsapp}`}
-                />
-                
-                <ContactItem 
-                  icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />}
-                  title="Location"
-                  content="Indonesia"
-                  link="#"
-                />
-              </div>
-
-              <div className="pt-8">
-                <h3 className="font-bold mb-4">Connect with us</h3>
-                <div className="flex gap-4">
-                  <SocialButton href={siteConfig.links.instagram} icon="instagram" />
-                  <SocialButton href={siteConfig.links.linkedin} icon="linkedin" />
-                  <SocialButton href={siteConfig.links.threads} icon="threads" />
-                  <SocialButton href={siteConfig.links.github} icon="github" />
-                </div>
-              </div>
+      {/* Contact Form */}
+      <section className="section bg-gray-50 dark:bg-gray-900">
+        <div className="container-wide">
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-8 text-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Get in Touch</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Fill out the form below and I'll get back to you as soon as possible.
+              </p>
             </div>
-
-            {/* Contact Form */}
-            <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 animate-slide-up" style={{ animationDelay: '200ms' }}>
-              {isSubmitted ? (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    Thank you for contacting us. We'll get back to you shortly.
-                  </p>
-                  <button 
-                    onClick={() => setIsSubmitted(false)}
-                    className="text-primary-600 font-medium hover:underline"
-                  >
-                    Send another message
-                  </button>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-black p-8 md:p-12 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+              {/* Name */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                  Your Name *
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur('name')}
+                    className={`w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border ${
+                      errors.name ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-800'
+                    } rounded-xl focus:outline-none focus:ring-2 ${
+                      errors.name ? 'focus:ring-red-500' : 'focus:ring-gray-900 dark:focus:ring-white'
+                    } focus:border-transparent text-gray-900 dark:text-white transition-all`}
+                    placeholder="John Doe"
+                    aria-required="true"
+                    aria-label="Your full name"
+                    aria-invalid={!!errors.name}
+                    aria-describedby={errors.name ? 'name-error' : undefined}
+                  />
+                  {errors.name && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <AlertCircle className="w-5 h-5 text-red-500" />
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-lg border bg-gray-50 dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
-                      placeholder="Your Name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-lg border bg-gray-50 dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="projectType" className="block text-sm font-medium mb-2">Project Type</label>
-                    <select
-                      id="projectType"
-                      name="projectType"
-                      value={formData.projectType}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border bg-gray-50 dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
-                    >
-                      <option>Web Application</option>
-                      <option>Landing Page</option>
-                      <option>E-Commerce</option>
-                      <option>Custom Development</option>
-                      <option>Other</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">Message</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={4}
-                      className="w-full px-4 py-3 rounded-lg border bg-gray-50 dark:bg-slate-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none resize-none"
-                      placeholder="Tell us about your project..."
-                    />
-                  </div>
-                  
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                {errors.name && (
+                  <p id="name-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.name}
+                  </p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                  Email Address *
+                </label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur('email')}
+                    className={`w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border ${
+                      errors.email ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-800'
+                    } rounded-xl focus:outline-none focus:ring-2 ${
+                      errors.email ? 'focus:ring-red-500' : 'focus:ring-gray-900 dark:focus:ring-white'
+                    } focus:border-transparent text-gray-900 dark:text-white transition-all`}
+                    placeholder="john@example.com"
+                    aria-required="true"
+                    aria-label="Your email address"
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
+                  />
+                  {errors.email && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <AlertCircle className="w-5 h-5 text-red-500" />
+                    </div>
+                  )}
+                </div>
+                {errors.email && (
+                  <p id="email-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Project Type */}
+              <div>
+                <label htmlFor="projectType" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                  Project Type *
+                </label>
+                <div className="relative">
+                  <select
+                    id="projectType"
+                    name="projectType"
+                    required
+                    value={formData.projectType}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur('projectType')}
+                    className={`w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border ${
+                      errors.projectType ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-800'
+                    } rounded-xl focus:outline-none focus:ring-2 ${
+                      errors.projectType ? 'focus:ring-red-500' : 'focus:ring-gray-900 dark:focus:ring-white'
+                    } focus:border-transparent text-gray-900 dark:text-white transition-all`}
+                    aria-required="true"
+                    aria-label="Select project type"
+                    aria-invalid={!!errors.projectType}
+                    aria-describedby={errors.projectType ? 'projectType-error' : undefined}
                   >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        Send Message
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </>
-                    )}
-                  </button>
-                </form>
-              )}
+                    <option value="">Select a project type</option>
+                    <option value="Web Application">Web Application</option>
+                    <option value="E-Commerce">E-Commerce</option>
+                    <option value="Landing Page">Landing Page</option>
+                    <option value="UI/UX Design">UI/UX Design</option>
+                    <option value="Consulting">Consulting</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                {errors.projectType && (
+                  <p id="projectType-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.projectType}
+                  </p>
+                )}
+              </div>
+
+              {/* Message */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label htmlFor="message" className="block text-sm font-semibold text-gray-900 dark:text-white">
+                    Project Details *
+                  </label>
+                  <span className={`text-xs ${
+                    formData.message.length > MAX_MESSAGE_LENGTH 
+                      ? 'text-red-600 dark:text-red-400 font-semibold' 
+                      : 'text-gray-500 dark:text-gray-400'
+                  }`}>
+                    {formData.message.length}/{MAX_MESSAGE_LENGTH}
+                  </span>
+                </div>
+                <div className="relative">
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
+                    onBlur={() => handleBlur('message')}
+                    rows={6}
+                    className={`w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border ${
+                      errors.message ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-gray-800'
+                    } rounded-xl focus:outline-none focus:ring-2 ${
+                      errors.message ? 'focus:ring-red-500' : 'focus:ring-gray-900 dark:focus:ring-white'
+                    } focus:border-transparent text-gray-900 dark:text-white resize-none transition-all`}
+                    placeholder="Tell me about your project, timeline, and any specific requirements..."
+                    aria-required="true"
+                    aria-label="Project details and requirements"
+                    aria-invalid={!!errors.message}
+                    aria-describedby={errors.message ? 'message-error' : undefined}
+                  />
+                </div>
+                {errors.message && (
+                  <p id="message-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Submit Button - Match Hero Style */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full px-6 py-2.5 text-sm font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
+                  isSubmitting 
+                    ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed' 
+                    : 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200'
+                }`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <MessageCircle className="w-4 h-4" />
+                    Send via WhatsApp
+                  </>
+                )}
+              </button>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                This will open WhatsApp with your message pre-filled. I'll respond within 24 hours.
+              </p>
+            </form>
+
+            {/* Alternative Contact */}
+            <div className="mt-16 pt-16 border-t border-gray-200 dark:border-gray-800">
+              <h3 className="text-2xl font-bold text-center mb-8">Or reach me directly</h3>
+              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+                <Link
+                  href="mailto:hello@aerodev.id"
+                  className="inline-flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-2xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-300"
+                >
+                  <Mail className="w-5 h-5" />
+                  hello@aerodev.id
+                </Link>
+                <Link
+                  href="https://wa.me/62896540617718"
+                  target="_blank"
+                  className="inline-flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold border-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-300"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  WhatsApp
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
     </div>
-  )
-}
-
-function ContactItem({ icon, title, content, link }: { icon: React.ReactNode, title: string, content: string, link: string }) {
-  return (
-    <a href={link} className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors group">
-      <div className="w-12 h-12 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform">
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {icon}
-        </svg>
-      </div>
-      <div>
-        <h3 className="font-bold text-lg">{title}</h3>
-        <p className="text-gray-600 dark:text-gray-400">{content}</p>
-      </div>
-    </a>
-  )
-}
-
-function SocialButton({ href, icon }: { href: string, icon: string }) {
-  // Simple SVG icons mapping (same as footer)
-  const icons: Record<string, React.ReactNode> = {
-    instagram: <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>,
-    linkedin: <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>,
-    github: <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>,
-    threads: <path d="M15.158 16.568c-.916.473-2.071.708-3.158.708-3.414 0-5.518-2.274-5.518-5.276 0-2.88 2.213-5.276 5.518-5.276 1.93 0 3.396.834 4.245 1.77.126.14.113.355-.028.48l-.93.826c-.13.115-.328.106-.447-.02-.574-.606-1.56-1.206-2.84-1.206-2.223 0-3.518 1.653-3.518 3.426 0 1.868 1.39 3.426 3.518 3.426.839 0 1.634-.213 2.197-.564.123-.077.28-.06.39.032l.965.815c.125.106.136.294.048.409zM12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.836 15.346c-.636.566-1.472.95-2.428 1.114-.956.164-1.956.164-2.816.164-4.416 0-7.518-3.047-7.518-7.276 0-4.14 3.034-7.276 7.518-7.276 4.484 0 7.518 3.136 7.518 7.276 0 1.276-.23 2.456-.636 3.536-.08.213-.34.286-.52.146l-.88-.68c-.16-.123-.19-.35-.116-.536.326-.826.506-1.736.506-2.466 0-3.04-2.213-5.276-5.872-5.276-3.659 0-5.872 2.236-5.872 5.276 0 3.04 2.213 5.276 5.872 5.276.736 0 1.456-.056 2.136-.164.68-.108 1.276-.386 1.736-.796.126-.113.32-.103.436.02l.856.966c.116.13.106.326-.02.436z"/>
-  }
-
-  return (
-    <Link 
-      href={href} 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="p-3 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 hover:bg-primary-500 hover:text-white transition-all duration-300"
-    >
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        {icons[icon]}
-      </svg>
-    </Link>
   )
 }

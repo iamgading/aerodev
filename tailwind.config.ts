@@ -10,34 +10,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // AeroDev Professional Palette (Blue-Cyan Theme)
+        // Pure Grayscale Palette
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6', // Royal Blue
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#0a0a0a',
         },
         accent: {
-          DEFAULT: '#06b6d4', // Cyan
-          light: '#22d3ee',
-          dark: '#0891b2',
+          DEFAULT: '#737373', // gray-500
+          light: '#a3a3a3',
+          dark: '#525252',
         },
         dark: {
-          bg: '#0f172a', // Slate 900
-          surface: '#1e293b', // Slate 800
-          border: '#334155', // Slate 700
+          bg: '#000000', // pure black
+          surface: '#171717', // gray-900
+          border: '#262626', // gray-800
         }
       },
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
-        heading: ['Space Grotesk', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        heading: ['Manrope', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       animation: {

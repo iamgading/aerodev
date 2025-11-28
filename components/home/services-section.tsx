@@ -45,11 +45,11 @@ export default function ServicesSection() {
       <div className="container-wide">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter max-w-2xl">
-            OUR EXPERTISE <br />
-            <span className="gradient-text">& CAPABILITIES</span>
+            MY EXPERTISE <br />
+            <span className="text-gray-500">& CAPABILITIES</span>
           </h2>
           <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-md">
-            We provide a comprehensive suite of digital services to help your business grow.
+            I provide a comprehensive suite of digital services to help your business grow.
           </p>
         </div>
 

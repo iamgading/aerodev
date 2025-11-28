@@ -1,36 +1,89 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { siteConfig } from '@/lib/site-config'
 import Logo from './logo'
 
 export function Footer() {
+  const pathname = usePathname()
+  const isHomePage = pathname === '/'
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (isHomePage && href.startsWith('/#')) {
+      e.preventDefault()
+      const id = href.replace('/#', '')
+      const element = document.getElementById(id)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    } else if (isHomePage && href === '/') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
-    <footer className="border-t border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-[#0A0A0A]">
+    <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
       <div className="container-wide py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand Column */}
-          <div className="col-span-1 md:col-span-2 space-y-4">
-            <Logo showIcon={true} />
-            <p className="text-gray-600 dark:text-gray-400 max-w-sm leading-relaxed">
-              {siteConfig.description}
+          <div className="space-y-4">
+            <Logo />
+            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+              Building digital products, sharing knowledge, and exploring new technologies.
             </p>
-            <div className="flex items-center gap-4 pt-4">
-              {/* Social Links */}
-              <SocialLink href={siteConfig.links.instagram} icon="instagram" />
-              <SocialLink href={siteConfig.links.linkedin} icon="linkedin" />
-              <SocialLink href={siteConfig.links.threads} icon="threads" />
-              <SocialLink href={siteConfig.links.github} icon="github" />
-            </div>
           </div>
-          
-          {/* Quick Links */}
+
+          {/* Navigation Column */}
           <div>
-            <h3 className="font-bold mb-6">Quick Links</h3>
-            <ul className="space-y-4">
-              <FooterLink href="/">Home</FooterLink>
-              <FooterLink href="/#services">Services</FooterLink>
-              <FooterLink href="/projects">Projects</FooterLink>
-              <FooterLink href="/blog">Blog</FooterLink>
-              <FooterLink href="/about">About</FooterLink>
+            <h3 className="font-bold text-lg mb-4">Navigation</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link 
+                  href="/" 
+                  onClick={(e) => handleScroll(e, '/')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/#about" 
+                  onClick={(e) => handleScroll(e, '/#about')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/#projects" 
+                  onClick={(e) => handleScroll(e, '/#projects')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Projects
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/#blog" 
+                  onClick={(e) => handleScroll(e, '/#blog')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Articles
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/#cta" 
+                  onClick={(e) => handleScroll(e, '/#cta')}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
           
@@ -39,18 +92,18 @@ export function Footer() {
             <h3 className="font-bold mb-6">Contact</h3>
             <ul className="space-y-4">
               <li className="text-gray-600 dark:text-gray-400 flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-600 dark:text-cyan-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
+                <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                   {siteConfig.contact.email}
                 </a>
               </li>
               <li className="text-gray-600 dark:text-gray-400 flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-600 dark:text-cyan-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <a href={`https://wa.me/${siteConfig.contact.whatsapp}`} className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
+                <a href={`https://wa.me/${siteConfig.contact.whatsapp}`} className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                   WhatsApp Us
                 </a>
               </li>
@@ -58,23 +111,19 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-200 dark:border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
+          <div className="flex items-center gap-4">
+            <SocialLink href={siteConfig.links.instagram} icon="instagram" />
+            <SocialLink href={siteConfig.links.linkedin} icon="linkedin" />
+            <SocialLink href={siteConfig.links.threads} icon="threads" />
+            <SocialLink href={siteConfig.links.github} icon="github" />
+          </div>
         </div>
       </div>
     </footer>
-  )
-}
-
-function FooterLink({ href, children }: { href: string, children: React.ReactNode }) {
-  return (
-    <li>
-      <Link href={href} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
-        {children}
-      </Link>
-    </li>
   )
 }
 
@@ -92,7 +141,7 @@ function SocialLink({ href, icon }: { href: string, icon: string }) {
       href={href} 
       target="_blank" 
       rel="noopener noreferrer"
-      className="p-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-blue-600 dark:hover:bg-cyan-400 hover:text-white transition-all duration-300"
+      className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-900 dark:hover:bg-gray-100 hover:text-white dark:hover:text-gray-900 transition-all duration-300"
     >
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
         {icons[icon]}

@@ -63,7 +63,7 @@ export function JsonLd({ type = 'WebSite', data = {} }: JsonLdProps) {
           name: siteConfig.author,
           url: siteConfig.url,
           sameAs: [
-            siteConfig.links.twitter,
+            siteConfig.links.threads,
             siteConfig.links.github,
             siteConfig.links.linkedin,
           ],

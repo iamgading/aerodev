@@ -44,15 +44,15 @@ export default function BlogSection() {
   ]
 
   return (
-    <section id="blog" className="section bg-gray-50 dark:bg-[#0A0A0A] border-t border-gray-200 dark:border-white/5 scroll-mt-20">
+    <section id="blog" className="section !pt-12 md:!pt-20 bg-gray-50 dark:bg-gray-900 scroll-mt-20">
       <div className="container-wide">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
-          <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
             LATEST <br />
-            <span className="gradient-text">INSIGHTS</span>
+            <span className="text-gray-600 dark:text-gray-400">CONTENT</span>
           </h2>
-          <Link href="/blog" className="btn-premium-outline px-8 py-3 text-sm">
-            Read All Articles
+          <Link href="/blog" className="inline-flex items-center px-6 py-2.5 text-sm font-medium border-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all">
+            View All
           </Link>
         </div>
 
@@ -63,10 +63,10 @@ export default function BlogSection() {
               href={`/blog/${post.slug}`}
               className="glass-card p-8 group hover:scale-[1.02] transition-all duration-300 block"
             >
-              <div className="text-xs font-mono text-blue-600 dark:text-cyan-400 mb-4 uppercase tracking-widest">
+              <div className="text-xs font-mono text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-widest">
                 {post.category} — {post.date}
               </div>
-              <h3 className="text-xl font-bold leading-tight mb-6 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
+              <h3 className="text-xl font-bold leading-tight mb-6 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
                 {post.title}
               </h3>
               <div className="flex items-center text-sm font-semibold accent-link">
