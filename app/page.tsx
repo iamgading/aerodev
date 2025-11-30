@@ -5,6 +5,8 @@ import BlogSection from '@/components/home/blog-section'
 import Link from 'next/link'
 import CTASection from '@/components/home/cta-section'
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">

@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { siteConfig } from '@/lib/site-config'
 import CTASection from '@/components/home/cta-section'
 
+import { ArrowLeft } from 'lucide-react'
+
 export const metadata = {
   title: 'About - AeroDev',
   description: 'Learn more about AeroDev and our mission to elevate digital experiences.',
@@ -12,8 +14,20 @@ export default function AboutPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <section className="py-24 md:py-32 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
-        <div className="container-wide text-center animate-fade-in">
+      <section className="py-24 md:py-32 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 relative">
+        <div className="container-wide text-center animate-fade-in relative">
+          <div className="absolute left-0 top-0 hidden md:block">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+          </div>
+          <div className="md:hidden flex justify-start mb-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+          </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6">
             ABOUT <span className="text-gray-500">AERODEV</span>
           </h1>
@@ -27,19 +41,41 @@ export default function AboutPage() {
       <section className="section bg-gray-50 dark:bg-gray-900">
         <div className="container-wide">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8 animate-slide-up">
+            
+            {/* Logo - First Column */}
+            <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl animate-slide-up order-1 md:order-1">
+              <div className="absolute inset-0 bg-gray-900 dark:bg-black" />
+              {/* Abstract Pattern */}
+              <div className="absolute inset-0 opacity-30">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="w-24 h-24 mx-auto bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+                    <svg className="w-12 h-12 text-gray-900 dark:text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 4L4 20H8L12 12L16 20H20L12 4Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Aerodev</h3>
+                  <p className="text-gray-400 text-sm uppercase tracking-wide">by Gading Satrio</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Text Content - Second Column */}
+            <div className="space-y-8 animate-slide-up order-2 md:order-2" style={{ animationDelay: '200ms' }}>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-                My Mission
+                The Journey
               </h2>
               <div className="space-y-6 text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
                 <p>
-                  Aerodev started as my personal space to document what I'm learning and building. I'm an IT student who's passionate about web development, and I believe in learning by doing.
+                  I&apos;m a passionate Full Stack Developer based in Indonesia. My journey in tech started with a curiosity about how things work on the web, which quickly turned into a career building digital products.
                 </p>
                 <p>
-                  I don't just write code; I explore, experiment, and share the journey. Every project is a learning opportunity, and I'm here to grow alongside the community. Whether it's a small landing page or a complex web app, I approach each project with curiosity and dedication.
+                  I specialize in building modern web applications using the latest technologies. I&apos;m always learning and exploring new tools to deliver the best possible solutions for my clients.
                 </p>
                 <p>
-                  This isn't about being perfect—it's about progress, continuous learning, and enjoying the process of building things that matter.
+                  When I&apos;m not coding, you can find me exploring new coffee shops, reading tech blogs, or working on personal projects. I believe in the power of technology to solve real-world problems and I&apos;m excited to be part of this ever-evolving industry.
                 </p>
               </div>
               
@@ -54,25 +90,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            
-            <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl animate-slide-up" style={{ animationDelay: '200ms' }}>
-              <div className="absolute inset-0 bg-gray-900 dark:bg-black" />
-              {/* Abstract Pattern */}
-              <div className="absolute inset-0 opacity-30">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 mx-auto bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-                    <svg className="w-12 h-12 text-gray-900 dark:text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 4L4 20H8L12 12L16 20H20L12 4Z" fill="currentColor"/>
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Building the Future</h3>
-                  <p className="text-gray-400">One pixel at a time.</p>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
@@ -111,7 +129,7 @@ export default function AboutPage() {
                       {siteConfig.founder.bio}
                     </p>
                     <p>
-                      I'm still learning, still growing, and still figuring things out—and that's exactly what makes this journey exciting. Aerodev is where I document this process, share what works (and what doesn't), and connect with others who are on a similar path.
+                      I&apos;m still learning, still growing, and still figuring things out—and that&apos;s exactly what makes this journey exciting. Aerodev is where I document this process, share what works (and what doesn&apos;t), and connect with others who are on a similar path.
                     </p>
                   </div>
 

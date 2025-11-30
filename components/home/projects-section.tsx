@@ -1,114 +1,113 @@
-'use client'
-
 import Link from 'next/link'
+import Image from 'next/image'
+import { getProjects } from '@/lib/supabase/server-queries'
+import { Project } from '@/lib/supabase/types'
 
-// Mock projects data
-const projects = [
-  {
-    slug: 'project-1',
-    title: 'E-Commerce Platform',
-    description: 'A full-stack e-commerce solution with payment integration.',
-    image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=800&q=80',
-    tags: ['Next.js', 'Stripe', 'Tailwind'],
-    link: '#'
-  },
-  {
-    slug: 'project-2',
-    title: 'SaaS Dashboard',
-    description: 'Modern analytics dashboard for a SaaS application.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-    tags: ['React', 'TypeScript', 'Charts'],
-    link: '#'
-  },
-  {
-    slug: 'project-3',
-    title: 'Corporate Website',
-    description: 'Professional corporate website with CMS integration.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-    tags: ['Next.js', 'Sanity', 'Tailwind'],
-    link: '#'
-  },
-  {
-    slug: 'project-4',
-    title: 'Mobile App Landing',
-    description: 'High-converting landing page for mobile application.',
-    image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80',
-    tags: ['React', 'Framer Motion', 'CSS'],
-    link: '#'
+export const revalidate = 60 // Revalidate every 60 seconds
+
+export default async function ProjectsSection() {
+  // Fetch featured projects from Supabase
+  let projects: Project[] = []
+  try {
+    const allProjects = await getProjects(true) // Get only featured projects
+    projects = allProjects.slice(0, 4) // Show max 4 projects
+  } catch (error) {
+    console.error('Error fetching projects:', error)
+    // If featured projects fail, try getting all projects
+    try {
+      const allProjects = await getProjects()
+      projects = allProjects.slice(0, 4)
+    } catch (err) {
+      console.error('Error fetching all projects:', err)
+      projects = []
+    }
   }
-]
 
-export default function ProjectsSection() {
   return (
-    <section id="projects" className="section !pt-12 md:!pt-20 bg-white dark:bg-black scroll-mt-20">
+    <section id="projects" className="section relative bg-white dark:bg-black scroll-mt-20 !pt-12 md:!pt-16">
       <div className="container-wide">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
           <div className="max-w-2xl">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              THINGS I'VE <br />
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
+              THINGS I&apos;VE <br />
               <span className="text-gray-600 dark:text-gray-400">BUILT</span>
             </h2>
-            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400">
+            <p className="text-base md:text-lg text-gray-700 dark:text-gray-400">
               Projects and experiments from my creative journey.
             </p>
           </div>
           <Link 
             href="/projects" 
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 text-sm font-bold border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl hover:border-gray-900 dark:hover:border-gray-100 transition-all duration-300"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 text-sm font-bold border-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-2xl hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-300"
           >
             View All Projects
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projects.map((project, index) => (
-            <div 
-              key={project.slug}
-              className="glass-card group relative overflow-hidden"
-            >
-              {/* Image Container */}
-              <div className="relative h-80 overflow-hidden">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700 ease-out"
-                  style={{ backgroundImage: `url(${project.image})` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+        {/* Projects Grid */}
+        {projects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 dark:text-gray-400">No projects yet. Add some from the admin dashboard!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {projects.map((project, index) => (
+              <Link
+                key={project.id}
+                href={`/projects/${project.slug}`}
+                className="group relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 hover:shadow-xl"
+              >
+                {/* Image Container */}
+                <div className="relative h-64 overflow-hidden bg-gray-100 dark:bg-gray-800">
+                  <Image
+                    src={project.image_url}
+                    alt={project.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    loading={index < 2 ? 'eager' : 'lazy'}
+                  />
+                </div>
                 
-                {/* Content Overlay */}
-                <div className="absolute bottom-0 left-0 w-full p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="flex flex-wrap gap-2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-                    {project.tags.map(tag => (
+                {/* Content */}
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      {project.category}
+                    </span>
+                    {project.featured && (
+                      <span className="px-2 py-0.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold rounded-full">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm line-clamp-2">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.slice(0, 3).map((tag: string) => (
                       <span 
-                        key={tag} 
-                        className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-white/20 backdrop-blur text-white border border-white/10"
+                        key={tag}
+                        className="px-3 py-1 text-xs font-medium bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
                       >
                         {tag}
                       </span>
                     ))}
+                    {project.tags.length > 3 && (
+                      <span className="px-3 py-1 text-xs font-medium text-gray-500">
+                        +{project.tags.length - 3}
+                      </span>
+                    )}
                   </div>
-                  
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                    {project.title}
-                  </h3>
-                  
-                  <p className="text-gray-300 line-clamp-2 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-                    {project.description}
-                  </p>
-                  
-                  <Link 
-                    href={`/projects/${project.slug}`}
-                    className="inline-flex items-center text-white font-semibold hover:text-gray-200 transition-colors"
-                  >
-                    View Project
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

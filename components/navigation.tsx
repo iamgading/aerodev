@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { useState, useEffect } from 'react'
 import Logo from './logo'
-import { Menu, X, ArrowRight, Github, Linkedin, Instagram, Home, User, Briefcase, FileText } from 'lucide-react'
+import { Menu, X, ArrowRight, Github, Linkedin, Instagram, Home, User, Briefcase, FileText, Mail } from 'lucide-react'
 
 const navItems = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'About', href: '#about', icon: User },
   { name: 'Projects', href: '#projects', icon: Briefcase },
   { name: 'Blog', href: '#blog', icon: FileText },
+  { name: 'Contact', href: '#cta', icon: Mail },
 ]
 
 export function Navigation() {
@@ -252,7 +253,7 @@ export function Navigation() {
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center justify-center gap-2 w-full p-5 text-lg font-bold bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-xl"
             >
-              Start a Project
+              Contact Me
               <ArrowRight className="w-5 h-5" />
             </Link>
 

@@ -145,7 +145,7 @@ export function SearchBar() {
             </div>
           ) : query.trim() ? (
             <div className="p-4 text-center text-muted-foreground">
-              No results found for "{query}"
+                No results found for &quot;{query}&quot;
             </div>
           ) : null}
         </div>

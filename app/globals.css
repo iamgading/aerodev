@@ -23,6 +23,10 @@
     --color-surface-light: 250 250 250; /* gray-50 */
     --color-surface-dark: 23 23 23; /* gray-900 */
     
+    --color-navy: 15 23 42; /* slate-900 - Navy Blue */
+    --color-navy-light: 30 41 59; /* slate-800 */
+    --color-navy-dark: 2 6 23; /* Very dark navy */
+    
     /* Text Colors */
     --color-text-primary-light: 23 23 23; /* gray-900 */
     --color-text-primary-dark: 250 250 250; /* gray-50 */
@@ -30,12 +34,17 @@
     --color-text-secondary-dark: 163 163 163; /* gray-400 */
   }
 
+  .dark {
+    --color-primary: 250 250 250; /* gray-50 */
+  }
+
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 
   * {
-    @apply border-gray-200 dark:border-white/10;
+    @apply border-gray-200 dark:border-gray-800;
   }
   
   body {
@@ -47,6 +56,15 @@
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+    /* Subtle Texture */
+    background-image: 
+      radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.015) 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+  
+  .dark body {
+    background-image: 
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.015) 1px, transparent 0);
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -75,17 +93,17 @@
   
   /* Section Spacing - Increased for better scroll positioning */
   .section {
-    @apply py-16 md:py-32 lg:py-40;
+    @apply py-12 sm:py-16 md:py-20 lg:py-24;
   }
 
-  /* Glass Cards */
+  /* Glass Cards - Refined */
   .glass-card {
-    @apply relative overflow-hidden bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 rounded-2xl transition-all duration-500;
+    @apply bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50 rounded-2xl p-6 transition-all duration-300;
   }
   
   .glass-card:hover {
-    border-color: rgb(var(--color-primary) / 0.5);
-    box-shadow: 0 20px 40px -12px rgb(var(--color-primary) / 0.15);
+    @apply border-gray-300 dark:border-gray-700 shadow-xl shadow-gray-900/5 dark:shadow-white/5;
+    transform: translateY(-4px);
   }
 
   /* Modern Premium Buttons */

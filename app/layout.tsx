@@ -2,11 +2,13 @@ import type { Metadata } from 'next'
 import { Manrope, Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import { Navigation } from '@/components/navigation'
-import { Footer } from '@/components/footer'
 import { siteConfig } from '@/lib/site-config'
 import MouseSpotlight from '@/components/ui/mouse-spotlight'
 import { Toaster } from 'sonner'
+import { BackToTop } from '@/components/ui/back-to-top'
+import { ScrollProgress } from '@/components/ui/scroll-progress'
+import { ErrorBoundary } from '@/components/ui/error-boundary'
+import { LayoutWrapper } from '@/components/layout-wrapper'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -68,20 +70,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <MouseSpotlight />
-          <div className="min-h-screen flex flex-col relative z-10">
-            <Navigation />
-            <main id="main-content" className="flex-1" role="main">
+          <ErrorBoundary>
+            <ScrollProgress />
+            <MouseSpotlight />
+            <LayoutWrapper>
               {children}
-            </main>
-            <Footer />
-          </div>
-          <Toaster 
-            position="bottom-right" 
-            expand={false}
-            richColors
-            closeButton
-          />
+            </LayoutWrapper>
+            <Toaster 
+              position="bottom-right" 
+              expand={false}
+              richColors
+              closeButton
+            />
+            <BackToTop />
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>

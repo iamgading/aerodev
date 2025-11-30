@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Mail, MessageCircle, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Mail, MessageCircle, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import { Spinner } from '@/components/ui/spinner'
 import { validateEmail } from '@/lib/utils'
@@ -129,13 +129,25 @@ ${formData.message}`
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <section className="py-24 md:py-32 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
-        <div className="container-wide text-center">
+      <section className="py-24 md:py-32 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 relative">
+        <div className="container-wide text-center relative">
+          <div className="absolute left-0 top-0 hidden md:block">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+          </div>
+          <div className="md:hidden flex justify-start mb-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+          </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6">
-            LET'S <span className="text-gray-500">WORK TOGETHER</span>
+            LET&apos;S <span className="text-gray-500">WORK TOGETHER</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Have a project in mind? Fill out the form below and I'll get back to you within 24 hours.
+            Have a project in mind? Fill out the form below and I&apos;ll get back to you within 24 hours.
           </p>
         </div>
       </section>
@@ -147,7 +159,7 @@ ${formData.message}`
             <div className="mb-8 text-center">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Get in Touch</h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Fill out the form below and I'll get back to you as soon as possible.
+                Fill out the form below and I&apos;ll get back to you as soon as possible.
               </p>
             </div>
             <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-black p-8 md:p-12 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
@@ -297,7 +309,7 @@ ${formData.message}`
                     } rounded-xl focus:outline-none focus:ring-2 ${
                       errors.message ? 'focus:ring-red-500' : 'focus:ring-gray-900 dark:focus:ring-white'
                     } focus:border-transparent text-gray-900 dark:text-white resize-none transition-all`}
-                    placeholder="Tell me about your project, timeline, and any specific requirements..."
+                    placeholder="I&apos;m always open to discussing new projects, creative ideas or opportunities to be part of your visions."
                     aria-required="true"
                     aria-label="Project details and requirements"
                     aria-invalid={!!errors.message}
@@ -336,7 +348,7 @@ ${formData.message}`
               </button>
 
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                This will open WhatsApp with your message pre-filled. I'll respond within 24 hours.
+                This will open WhatsApp with your message pre-filled. I&apos;ll respond within 24 hours.
               </p>
             </form>
 
