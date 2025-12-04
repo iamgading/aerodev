@@ -14,22 +14,35 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const project = await getProjectBySlug(params.slug)
-  
-  if (!project) {
-    return {
-      title: 'Project Not Found',
+  try {
+    const project = await getProjectBySlug(params.slug)
+    
+    if (!project) {
+      return {
+        title: 'Project Not Found',
+      }
     }
-  }
 
-  return {
-    title: `${project.title} - Aerodev`,
-    description: project.description,
+    return {
+      title: `${project.title} - Aerodev`,
+      description: project.description,
+    }
+  } catch (error) {
+    console.error('Error fetching project metadata:', error)
+    return {
+      title: 'Project - Aerodev',
+    }
   }
 }
 
 export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
-  const project = await getProjectBySlug(params.slug)
+  let project;
+  try {
+    project = await getProjectBySlug(params.slug)
+  } catch (error) {
+    console.error('Error fetching project:', error)
+    notFound()
+  }
 
   if (!project) {
     notFound()

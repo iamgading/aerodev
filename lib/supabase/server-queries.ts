@@ -41,7 +41,14 @@ export async function getProjectBySlug(slug: string) {
     .eq('slug', slug)
     .single()
   
-  if (error) throw error
+  // Return null if project not found, instead of throwing error
+  if (error) {
+    if (error.code === 'PGRST116') {
+      // PGRST116 = "The result contains 0 rows" - project not found
+      return null
+    }
+    throw error
+  }
   return data as Project
 }
 
