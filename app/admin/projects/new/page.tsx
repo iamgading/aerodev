@@ -6,6 +6,7 @@ import { createProject, uploadImage } from '@/lib/supabase/queries'
 import { ArrowLeft, Upload, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 export default function NewProjectPage() {
   const router = useRouter()
@@ -56,35 +57,54 @@ export default function NewProjectPage() {
     e.preventDefault()
     
     if (!imageFile) {
-      alert('Please upload an image')
+      toast.error('Please upload an image')
       return
     }
 
     setLoading(true)
+    const toastId = toast.loading('Processing...')
 
     try {
-      // Upload image first
-      const imageUrl = await uploadImage(imageFile, 'projects')
+      // 1. Upload Image
+      toast.loading('Uploading image...', { id: toastId })
+      console.log('Starting image upload...')
+      let imageUrl = ''
+      try {
+        imageUrl = await uploadImage(imageFile, 'projects')
+        console.log('Image uploaded successfully:', imageUrl)
+      } catch (uploadError: any) {
+        console.error('Image upload failed:', uploadError)
+        throw new Error(`Image upload failed: ${uploadError.message || uploadError.error_description || 'Unknown storage error'}`)
+      }
 
-      // Create project
-      await createProject({
-        title: formData.title,
-        slug: formData.slug,
-        description: formData.description,
-        content: formData.content || undefined,
-        image_url: imageUrl,
-        category: formData.category,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
-        demo_link: formData.demo_link || undefined,
-        repo_link: formData.repo_link || undefined,
-        featured: formData.featured,
-      })
+      // 2. Create Project
+      toast.loading('Creating project record...', { id: toastId })
+      console.log('Starting project creation...')
+      try {
+        await createProject({
+          title: formData.title,
+          slug: formData.slug,
+          description: formData.description,
+          content: formData.content || undefined,
+          image_url: imageUrl,
+          category: formData.category,
+          tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+          demo_link: formData.demo_link || undefined,
+          repo_link: formData.repo_link || undefined,
+          featured: formData.featured,
+        })
+        console.log('Project created successfully')
+      } catch (dbError: any) {
+        console.error('Database insert failed:', dbError)
+        throw new Error(`Database error: ${dbError.message || dbError.details || 'Unknown database error'}`)
+      }
 
+      toast.success('Project created successfully!', { id: toastId })
       router.push('/admin/projects')
       router.refresh()
-    } catch (error) {
-      console.error('Error creating project:', error)
-      alert('Failed to create project')
+    } catch (error: any) {
+      console.error('Full error object:', error)
+      toast.error(error.message || 'Something went wrong', { id: toastId })
     } finally {
       setLoading(false)
     }

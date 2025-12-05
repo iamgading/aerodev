@@ -6,11 +6,22 @@ import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
 import { getProjectBySlug, getProjects } from '@/lib/supabase/server-queries'
 import CTASection from '@/components/home/cta-section'
 
+// Allow dynamic rendering for slugs not generated at build time
+export const dynamicParams = true
+
+// Revalidate every 60 seconds for ISR (Incremental Static Regeneration)
+export const revalidate = 60
+
 export async function generateStaticParams() {
-  const projects = await getProjects()
-  return projects.map((project) => ({
-    slug: project.slug,
-  }))
+  try {
+    const projects = await getProjects()
+    return projects.map((project) => ({
+      slug: project.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
@@ -62,17 +73,14 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
           </Link>
 
           <div className="max-w-4xl">
-            {/* Category Badge */}
-            <div className="flex items-center gap-3 mb-6">
-              <span className="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-sm font-bold rounded-full text-gray-900 dark:text-white">
-                {project.category}
-              </span>
-              {project.featured && (
-                <span className="px-4 py-1.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-bold rounded-full">
+            {/* Featured Badge */}
+            {project.featured && (
+              <div className="mb-6">
+                <span className="px-4 py-1.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm font-bold rounded-full">
                   Featured
                 </span>
-              )}
-            </div>
+              </div>
+            )}
 
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-gray-900 dark:text-white">
               {project.title}

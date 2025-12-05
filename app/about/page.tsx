@@ -1,16 +1,50 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { siteConfig } from '@/lib/site-config'
 import CTASection from '@/components/home/cta-section'
-
 import { ArrowLeft } from 'lucide-react'
-
-export const metadata = {
-  title: 'About - AeroDev',
-  description: 'Learn more about AeroDev and our mission to elevate digital experiences.',
-}
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function AboutPage() {
+  const [projectCount, setProjectCount] = useState<number>(0)
+
+  useEffect(() => {
+    const fetchProjectCount = async () => {
+      const supabase = createClient()
+      const { count } = await supabase
+        .from('projects')
+        .select('*', { count: 'exact', head: true })
+      
+      setProjectCount(count || 0)
+    }
+
+    fetchProjectCount()
+
+    // Set up realtime subscription
+    const supabase = createClient()
+    const channel = supabase
+      .channel('projects-count')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'projects'
+        },
+        () => {
+          fetchProjectCount()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -81,7 +115,7 @@ export default function AboutPage() {
               
               <div className="grid grid-cols-2 gap-8 pt-4">
                 <div className="p-6 bg-white dark:bg-black rounded-2xl border border-gray-200 dark:border-gray-800">
-                  <div className="text-4xl font-black text-gray-900 dark:text-white mb-2">2+</div>
+                  <div className="text-4xl font-black text-gray-900 dark:text-white mb-2">{projectCount}+</div>
                   <div className="text-sm font-medium text-gray-500 uppercase tracking-wide">Projects Launched</div>
                 </div>
                 <div className="p-6 bg-white dark:bg-black rounded-2xl border border-gray-200 dark:border-gray-800">

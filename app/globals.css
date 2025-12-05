@@ -190,6 +190,106 @@
   .accent-link:hover::after {
     @apply w-full;
   }
+
+  /* Custom Prose Styling for Blog Content */
+  .prose {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+
+  .prose p {
+    @apply mb-6 leading-relaxed;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    @apply font-bold text-gray-900 dark:text-white mt-8 mb-4;
+  }
+
+  .prose h1 {
+    @apply text-4xl;
+  }
+
+  .prose h2 {
+    @apply text-3xl;
+  }
+
+  .prose h3 {
+    @apply text-2xl;
+  }
+
+  .prose h4 {
+    @apply text-xl;
+  }
+
+  .prose ul,
+  .prose ol {
+    @apply mb-6 pl-6 space-y-2;
+  }
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose li {
+    @apply leading-relaxed;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-700 pl-4 italic my-6 text-gray-700 dark:text-gray-300;
+  }
+
+  .prose code {
+    @apply bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono;
+  }
+
+  .prose pre {
+    @apply bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto my-6;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .prose a {
+    @apply text-blue-600 dark:text-blue-400 hover:underline;
+  }
+
+  .prose img {
+    @apply rounded-lg my-6;
+  }
+
+  .prose hr {
+    @apply my-8 border-gray-300 dark:border-gray-700;
+  }
+
+  .prose table {
+    @apply w-full my-6 border-collapse;
+  }
+
+  .prose th,
+  .prose td {
+    @apply border border-gray-300 dark:border-gray-700 px-4 py-2;
+  }
+
+  .prose th {
+    @apply bg-gray-100 dark:bg-gray-800 font-bold;
+  }
+
+  .prose strong {
+    @apply font-bold text-gray-900 dark:text-white;
+  }
+
+  .prose em {
+    @apply italic;
+  }
 }
 
 @layer utilities {

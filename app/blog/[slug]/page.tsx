@@ -2,34 +2,58 @@ import DOMPurify from 'isomorphic-dompurify'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Calendar, Tag } from 'lucide-react'
+import { ArrowLeft, Calendar } from 'lucide-react'
 import { getPostBySlug, getPosts } from '@/lib/supabase/server-queries'
 import CTASection from '@/components/home/cta-section'
 
+// Allow dynamic rendering for slugs not generated at build time
+export const dynamicParams = true
+
+// Revalidate every 60 seconds for ISR (Incremental Static Regeneration)
+export const revalidate = 60
+
 export async function generateStaticParams() {
-  const posts = await getPosts()
-  return posts.map((post) => ({
-    slug: post.slug,
-  }))
+  try {
+    const posts = await getPosts(true) // Only published posts
+    return posts.map((post) => ({
+      slug: post.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for posts:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug)
-  
-  if (!post) {
-    return {
-      title: 'Post Not Found',
+  try {
+    const post = await getPostBySlug(params.slug)
+    
+    if (!post) {
+      return {
+        title: 'Post Not Found',
+      }
     }
-  }
 
-  return {
-    title: `${post.title} - Aerodev`,
-    description: post.excerpt,
+    return {
+      title: `${post.title} - Aerodev`,
+      description: post.excerpt,
+    }
+  } catch (error) {
+    console.error('Error generating metadata for post:', error)
+    return {
+      title: 'Blog - Aerodev',
+    }
   }
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug)
+  let post;
+  try {
+    post = await getPostBySlug(params.slug)
+  } catch (error) {
+    console.error('Error fetching post:', error)
+    notFound()
+  }
 
   if (!post || !post.published) {
     notFound()
@@ -49,12 +73,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </Link>
 
           <div className="max-w-4xl">
-            {/* Category & Date */}
+            {/* Date */}
             <div className="flex items-center gap-4 mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-gray-100 dark:bg-gray-800 text-sm font-bold rounded-full text-gray-900 dark:text-white">
-                <Tag className="w-3.5 h-3.5" />
-                {post.category}
-              </span>
               <span className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Calendar className="w-3.5 h-3.5" />
                 {new Date(post.published_at || post.created_at).toLocaleDateString('en-US', {

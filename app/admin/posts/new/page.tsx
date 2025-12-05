@@ -6,6 +6,7 @@ import { createPost, uploadImage } from '@/lib/supabase/queries'
 import { ArrowLeft, Upload, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { toast } from 'sonner'
 
 export default function NewPostPage() {
   const router = useRouter()
@@ -53,33 +54,51 @@ export default function NewPostPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    const toastId = toast.loading('Processing...')
 
     try {
       let coverImage = undefined
       
-      // Upload image if provided
+      // 1. Upload Image
       if (imageFile) {
-        coverImage = await uploadImage(imageFile, 'posts')
+        toast.loading('Uploading cover image...', { id: toastId })
+        console.log('Starting image upload...')
+        try {
+          coverImage = await uploadImage(imageFile, 'posts')
+          console.log('Image uploaded successfully:', coverImage)
+        } catch (uploadError: any) {
+          console.error('Image upload failed:', uploadError)
+          throw new Error(`Image upload failed: ${uploadError.message || uploadError.error_description || 'Unknown storage error'}`)
+        }
       }
 
-      // Create post
-      await createPost({
-        title: formData.title,
-        slug: formData.slug,
-        excerpt: formData.excerpt,
-        content: formData.content,
-        cover_image: coverImage,
-        category: formData.category,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
-        published: formData.published,
-        published_at: formData.published ? new Date().toISOString() : undefined,
-      })
+      // 2. Create Post
+      toast.loading('Creating post record...', { id: toastId })
+      console.log('Starting post creation...')
+      try {
+        await createPost({
+          title: formData.title,
+          slug: formData.slug,
+          excerpt: formData.excerpt,
+          content: formData.content,
+          cover_image: coverImage,
+          category: formData.category,
+          tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+          published: formData.published,
+          published_at: formData.published ? new Date().toISOString() : undefined,
+        })
+        console.log('Post created successfully')
+      } catch (dbError: any) {
+        console.error('Database insert failed:', dbError)
+        throw new Error(`Database error: ${dbError.message || dbError.details || 'Unknown database error'}`)
+      }
 
+      toast.success('Post created successfully!', { id: toastId })
       router.push('/admin/posts')
       router.refresh()
-    } catch (error) {
-      console.error('Error creating post:', error)
-      alert('Failed to create post')
+    } catch (error: any) {
+      console.error('Full error object:', error)
+      toast.error(error.message || 'Something went wrong', { id: toastId })
     } finally {
       setLoading(false)
     }

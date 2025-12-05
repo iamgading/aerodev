@@ -73,11 +73,8 @@ export default async function ProjectsSection() {
                 {/* Content */}
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      {project.category}
-                    </span>
                     {project.featured && (
-                      <span className="px-2 py-0.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold rounded-full">
+                      <span className="px-2 py-0.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs font-bold rounded-full">
                         Featured
                       </span>
                     )}

@@ -74,21 +74,6 @@ export default async function ProjectsPage() {
             </div>
           ) : (
             <>
-              {/* Filters (Future implementation) */}
-              <div className="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in">
-                {['All', 'Web Apps', 'Landing Pages', 'Dashboard'].map((filter, index) => (
-                  <button
-                    key={filter}
-                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-                      index === 0
-                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {projects.map((project, index) => (
@@ -104,15 +89,10 @@ export default async function ProjectsPage() {
                         className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                         style={{ backgroundImage: `url(${project.image_url})` }}
                       />
-                      
-                      {/* Category Badge */}
-                      <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 dark:bg-black/90 backdrop-blur text-xs font-bold rounded-full shadow-sm text-gray-900 dark:text-white">
-                        {project.category}
-                      </div>
 
                       {/* Featured Badge */}
                       {project.featured && (
-                        <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold rounded-full shadow-sm">
+                        <div className="absolute top-4 right-4 px-3 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs font-bold rounded-full shadow-sm">
                           Featured
                         </div>
                       )}

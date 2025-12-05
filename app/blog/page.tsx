@@ -96,11 +96,8 @@ export default async function BlogPage() {
 
                   {/* Content */}
                   <div className="p-6">
-                    {/* Category */}
+                    {/* Date */}
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="px-3 py-1 bg-gray-100 dark:bg-gray-900 text-xs font-bold rounded-full text-gray-900 dark:text-white">
-                        {post.category}
-                      </span>
                       <span className="text-xs text-gray-500">
                         {new Date(post.created_at).toLocaleDateString('en-US', {
                           month: 'short',

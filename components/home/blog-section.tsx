@@ -73,9 +73,6 @@ export default async function BlogSection() {
                 {/* Content */}
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="px-2.5 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full">
-                      {post.category}
-                    </span>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(post.published_at || post.created_at).toLocaleDateString('en-US', { 
                         month: 'short', 
