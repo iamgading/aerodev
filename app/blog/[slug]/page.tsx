@@ -3,26 +3,12 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Calendar } from 'lucide-react'
-import { getPostBySlug, getPosts } from '@/lib/supabase/server-queries'
+import { getPostBySlug } from '@/lib/supabase/server-queries'
 import CTASection from '@/components/home/cta-section'
 
-// Allow dynamic rendering for slugs not generated at build time
-export const dynamicParams = true
-
-// Revalidate every 60 seconds for ISR (Incremental Static Regeneration)
-export const revalidate = 60
-
-export async function generateStaticParams() {
-  try {
-    const posts = await getPosts(true) // Only published posts
-    return posts.map((post) => ({
-      slug: post.slug,
-    }))
-  } catch (error) {
-    console.error('Error generating static params for posts:', error)
-    return []
-  }
-}
+// Force dynamic rendering for all blog post pages
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   try {
