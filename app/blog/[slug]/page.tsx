@@ -1,48 +1,70 @@
-import DOMPurify from 'isomorphic-dompurify'
-import { notFound } from 'next/navigation'
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Calendar } from 'lucide-react'
-import { getPostBySlug } from '@/lib/supabase/server-queries'
+import { ArrowLeft, Calendar, Loader2 } from 'lucide-react'
+import { getPostBySlug } from '@/lib/supabase/queries'
 import CTASection from '@/components/home/cta-section'
+import type { Post } from '@/lib/supabase/types'
 
-// Force dynamic rendering for all blog post pages
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export default function BlogPostPage() {
+  const params = useParams()
+  const slug = params?.slug as string
+  
+  const [post, setPost] = useState<Post | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  try {
-    const post = await getPostBySlug(params.slug)
-    
-    if (!post) {
-      return {
-        title: 'Post Not Found',
+  useEffect(() => {
+    async function fetchPost() {
+      if (!slug) {
+        setNotFound(true)
+        setLoading(false)
+        return
+      }
+
+      try {
+        const data = await getPostBySlug(slug)
+        if (!data || !data.published) {
+          setNotFound(true)
+        } else {
+          setPost(data)
+        }
+      } catch (err) {
+        console.error('Error fetching post:', err)
+        setNotFound(true)
+      } finally {
+        setLoading(false)
       }
     }
 
-    return {
-      title: `${post.title} - Aerodev`,
-      description: post.excerpt,
-    }
-  } catch (error) {
-    console.error('Error generating metadata for post:', error)
-    return {
-      title: 'Blog - Aerodev',
-    }
-  }
-}
+    fetchPost()
+  }, [slug])
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  let post;
-  try {
-    post = await getPostBySlug(params.slug)
-  } catch (error) {
-    console.error('Error fetching post:', error)
-    notFound()
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+      </div>
+    )
   }
 
-  if (!post || !post.published) {
-    notFound()
+  if (notFound || !post) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Post Not Found</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">The blog post you're looking for doesn't exist.</p>
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-all"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Blog
+        </Link>
+      </div>
+    )
   }
 
   return (
@@ -101,9 +123,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       {/* Post Content */}
       <section className="section bg-white dark:bg-black">
         <div className="container-wide max-w-4xl">
-          <article className="prose prose-lg dark:prose-invert max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />
-          </article>
+          <article 
+            className="prose prose-lg dark:prose-invert max-w-none"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
       </section>
 

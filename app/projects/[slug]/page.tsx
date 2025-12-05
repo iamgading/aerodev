@@ -1,48 +1,71 @@
-import DOMPurify from 'isomorphic-dompurify'
-import { notFound } from 'next/navigation'
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, ExternalLink, Github } from 'lucide-react'
-import { getProjectBySlug } from '@/lib/supabase/server-queries'
+import { ArrowLeft, ExternalLink, Github, Loader2 } from 'lucide-react'
+import { getProjectBySlug } from '@/lib/supabase/queries'
 import CTASection from '@/components/home/cta-section'
+import type { Project } from '@/lib/supabase/types'
 
-// Force dynamic rendering for all project pages
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export default function ProjectDetailPage() {
+  const params = useParams()
+  const router = useRouter()
+  const slug = params?.slug as string
+  
+  const [project, setProject] = useState<Project | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  try {
-    const project = await getProjectBySlug(params.slug)
-    
-    if (!project) {
-      return {
-        title: 'Project Not Found',
+  useEffect(() => {
+    async function fetchProject() {
+      if (!slug) {
+        setNotFound(true)
+        setLoading(false)
+        return
+      }
+
+      try {
+        const data = await getProjectBySlug(slug)
+        if (!data) {
+          setNotFound(true)
+        } else {
+          setProject(data)
+        }
+      } catch (err) {
+        console.error('Error fetching project:', err)
+        setNotFound(true)
+      } finally {
+        setLoading(false)
       }
     }
 
-    return {
-      title: `${project.title} - Aerodev`,
-      description: project.description,
-    }
-  } catch (error) {
-    console.error('Error fetching project metadata:', error)
-    return {
-      title: 'Project - Aerodev',
-    }
-  }
-}
+    fetchProject()
+  }, [slug])
 
-export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
-  let project;
-  try {
-    project = await getProjectBySlug(params.slug)
-  } catch (error) {
-    console.error('Error fetching project:', error)
-    notFound()
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+      </div>
+    )
   }
 
-  if (!project) {
-    notFound()
+  if (notFound || !project) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Project Not Found</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">The project you're looking for doesn't exist.</p>
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-all"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Projects
+        </Link>
+      </div>
+    )
   }
 
   return (
@@ -63,7 +86,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
             {project.featured && (
               <div className="mb-6">
                 <span className="px-4 py-1.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm font-bold rounded-full">
-                  Featured
+                  Eksklusif
                 </span>
               </div>
             )}
@@ -78,7 +101,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-8">
-              {project.tags.map((tag: string) => (
+              {project.tags?.map((tag: string) => (
                 <span
                   key={tag}
                   className="px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
@@ -136,11 +159,10 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
       {project.content && (
         <section className="section bg-white dark:bg-black">
           <div className="container-wide max-w-4xl">
-
-
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.content) }} />
-            </div>
+            <div 
+              className="prose prose-lg dark:prose-invert max-w-none"
+              dangerouslySetInnerHTML={{ __html: project.content }}
+            />
           </div>
         </section>
       )}
